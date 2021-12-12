@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "SchematicsMyComponent",
+  "title": "My Component Schema",
+  "type": "object",
+  "properties": {
+    "index": {
+      "type": "string",
+      "description": "输入题目序号",
+      "x-prompt": "输入题目序号"
+    },
+    "question": {
+      "type": "boolean",
+      "description": "需要生成题目吗?",
+      "x-prompt": "需要生成题目吗?"
+    },
+    "answer": {
+      "type": "boolean",
+      "description": "需要生成答案吗?",
+      "x-prompt": "需要生成答案吗?"
+    },
+    "analyse": {
+      "type": "boolean",
+      "description": "需要生成解析吗?",
+      "x-prompt": "需要生成解析吗?"
+    }
+  },
+  "required": ["index", "question", "answer", "analyse"]
+}
