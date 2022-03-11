@@ -65,8 +65,8 @@ export function metaQingflowSchema(options: any): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
     // console.log(options, `options`);
     const { question, answer, analyse } = options;
-    const questionSource = generateFiles(options, './template/question', 'src/app/question/question-list');
-    const answerSource = generateFiles(options, './template/answer', 'src/app/question/answer-list');
+    const questionSource = generateFiles(options, './template/question', 'src/app/QAA/question');
+    const answerSource = generateFiles(options, './template/answer', 'src/app/QAA/answer');
     const analyseSource = generateFiles(options, './template/analyse', 'src/assets/md/analyse');
     const describeSource = generateFiles(options, './template/describe', 'src/assets/md/describe');
     const sourceArr: Source[] = [describeSource];
