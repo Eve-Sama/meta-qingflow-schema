@@ -1,6 +1,6 @@
 {
-  "name": "meta-qingflow-schema",
-  "version": "0.0.0",
+  "name": "@eve-sama/meta-qingflow-schema",
+  "version": "0.0.1",
   "description": "meta-qingflow-schema",
   "scripts": {
     "build": "tsc -p tsconfig.json",
