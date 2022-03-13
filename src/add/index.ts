@@ -1,7 +1,7 @@
 import { Rule, SchematicContext, Tree, mergeWith, Source, chain } from '@angular-devkit/schematics';
 import { generateFiles, addImportStatement } from './utils';
 
-export function metaQingflowSchema(options: any): Rule {
+export default function (options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const { index, question, answer, analyse } = options;
     const questionSource = generateFiles(options, './template/question', 'src/app/QAA/question');
