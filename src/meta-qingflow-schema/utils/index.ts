@@ -1,5 +1,5 @@
 import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { apply, move, Source, template, Tree, url } from '@angular-devkit/schematics';
+import { apply, applyTemplates, move, Source, Tree, url } from '@angular-devkit/schematics';
 import { insertImport } from '@schematics/angular/utility/ast-utils';
 import { InsertChange, NoopChange } from '@schematics/angular/utility/change';
 import { normalize } from '@angular-devkit/core';
@@ -26,7 +26,7 @@ export function addImportStatement(tree: Tree, filePath: string, importName: str
 export function generateFiles(options: any, templateURL: string, targetUrl: string): Source {
   const movePath = normalize(targetUrl);
   const sourceParametrizedTemplates = apply(url(templateURL), [
-    template({
+    applyTemplates({
       ...options, // 用户输入的参数
     }),
     move(movePath),
