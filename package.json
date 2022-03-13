@@ -1,6 +1,6 @@
 {
   "name": "@eve-sama/meta-qingflow-schema",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "npm run build -- -w",
