@@ -1,15 +1,15 @@
 import { Rule, SchematicContext, Tree, chain, mergeWith, Source } from '@angular-devkit/schematics';
 import { Project, SyntaxKind } from 'ts-morph';
-import { generateFiles, addImportStatement } from './utils';
+import { generateFiles } from './utils';
 const modulePath = 'src/app/QAA/QAA.config.ts';
+const project = new Project();
 
 /**
  * 在特定数组中插入元素
  * @param arrayName 数组名
  * @param insertText 插入的文本内容
  */
-function insertArrayItem(arrayName: string, insertText: string): void {
-  const project = new Project();
+function insertArrayIdentifier(arrayName: string, insertText: string): void {
   const sourceFile = project.addSourceFileAtPath(modulePath);
   const declaration = sourceFile.getVariableDeclaration(arrayName);
   const arrayLiteralExpress = declaration!.getInitializerIfKindOrThrow(SyntaxKind.ArrayLiteralExpression);
@@ -21,8 +21,24 @@ function insertArrayItem(arrayName: string, insertText: string): void {
   sourceFile.saveSync();
 }
 
+function insertImportDeclaration(startText: string, insertText: string): void {
+  const sourceFile = project.addSourceFileAtPath(modulePath);
+  const declarations = sourceFile.getImportDeclarations();
+  // 上一个import state出现的行数
+  let lastLineNumber = 0;
+  declarations.forEach((declaration, index) => {
+    const namedImport = declaration.getNamedImports()[0];
+    const importName = namedImport.getNameNode().getText();
+    if (importName.startsWith(startText)) {
+      lastLineNumber = index + 1;
+    }
+  });
+  sourceFile.insertStatements(lastLineNumber, insertText);
+  sourceFile.saveSync();
+}
+
 export default function (options: any): Rule {
-  return (tree: Tree, _context: SchematicContext) => {
+  return (_tree: Tree, _context: SchematicContext) => {
     const { index, answer, analyse } = options;
     const questionSource = generateFiles(options, './template/question', 'src/app/QAA/question');
     const answerSource = generateFiles(options, './template/answer', 'src/app/QAA/answer');
@@ -37,22 +53,19 @@ export default function (options: any): Rule {
     sourceList.push(questionSource);
     if (answer) {
       sourceList.push(answerSource);
-      addImportStatement(
-        tree,
-        modulePath,
-        `Answer${index}Component`,
-        `./answer/answer-${index}/answer-${index}.component`
+      insertImportDeclaration(
+        'Answer',
+        `import { Answer${index}Component } from './answer/answer-${index}/answer-${index}.component';`
       );
+      insertArrayIdentifier('ANSWER', `Answer${index}Component`);
     }
-    addImportStatement(
-      tree,
-      modulePath,
-      `Question${index}Component`,
-      `./question/question-${index}/question-${index}.component`
+    insertImportDeclaration(
+      'Question',
+      `import { Question${index}Component } from './question/question-${index}/question-${index}.component';`
     );
-    insertArrayItem('QUESTION', `Question${index}Component`);
+    insertArrayIdentifier('QUESTION', `Question${index}Component`);
     const ruleArr: Rule[] = [];
     sourceList.forEach(v => ruleArr.push(mergeWith(v)));
-    return chain([]);
+    return chain(ruleArr);
   };
 }

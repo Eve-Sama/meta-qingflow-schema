@@ -18,8 +18,7 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "target": "es6",
-    "types": ["node"],
-    "removeComments": true,
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "exclude": ["scripts/**/*"]
