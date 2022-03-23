@@ -1,10 +1,9 @@
 {
   "name": "@eve-sama/meta-qingflow-schema",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && ts-node --project scripts/tsconfig.json scripts/copy-resources.ts",
     "build:watch": "npm run build -- -w",
-    "copy": "ts-node --project scripts/tsconfig.json scripts/copy-resources.ts",
     "publish:dev": "yalc push"
   },
   "keywords": [

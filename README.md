@@ -11,7 +11,6 @@
 本地开发时, 使用了[yalc](https://juejin.cn/post/7033400734746066957). 在完成本地开发后, 需要先进行打包.
 ```bash
 npm run build
-npm run copy
 ```
 
 之后进入打包目录进行本地发布.
@@ -20,7 +19,7 @@ cd dist/meta-qingflow-schema
 npm run publish:dev
 ```
 
-之后在`meta-qingflow`项目中执行以下代码, 加载该插件.
+之后在`meta-qingflow`项目中执行以下代码(执行一次即可), 加载该插件.
 ```bash
 yalc add @eve-sama/meta-qingflow-schema
 ```
