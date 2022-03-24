@@ -1,9 +1,10 @@
 import { Rule, SchematicContext, Tree, chain, mergeWith, Source } from '@angular-devkit/schematics';
-import { generateFiles, insertArrayIdentifier, insertImportDeclaration, insertMenu, showMessage } from './utils';
+import { generateFiles, getId, insertArrayIdentifier, insertImportDeclaration, insertMenu, showMessage } from './utils';
 import { Option } from './utils/interface';
 
 export default function (option: Option): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
+    option.id = getId();
     const { id, answer, analyse } = option;
     const questionSource = generateFiles(option, './template/question', 'src/app/QAA/question');
     const answerSource = generateFiles(option, './template/answer', 'src/app/QAA/answer');

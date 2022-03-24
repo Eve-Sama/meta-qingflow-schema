@@ -3,11 +3,6 @@
   "$id": "SchematicsMyComponent",
   "type": "object",
   "properties": {
-    "id": {
-      "type": "string",
-      "description": "输入题目序号",
-      "x-prompt": "输入题目序号"
-    },
     "answer": {
       "type": "boolean",
       "description": "需要生成答案吗?",
@@ -19,5 +14,5 @@
       "x-prompt": "需要生成解析吗?"
     }
   },
-  "required": ["id", "answer", "analyse"]
+  "required": ["answer", "analyse"]
 }

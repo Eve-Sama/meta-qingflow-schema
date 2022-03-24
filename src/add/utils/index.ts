@@ -4,6 +4,7 @@ import { Project, SyntaxKind, IndentationText, ObjectLiteralExpression, Property
 import { Option } from './interface';
 import * as ansiColors from 'ansi-colors';
 import _ from 'lodash';
+import fs from 'fs';
 
 const modulePath = 'src/app/QAA/QAA.config.ts';
 const project = new Project({
@@ -88,4 +89,11 @@ export function insertImportDeclaration(startText: string, insertText: string): 
   });
   sourceFile.insertStatements(lastLineNumber, insertText);
   sourceFile.saveSync();
+}
+
+/** 读取任务描述文档的数量, 以确定最新任务的编号 */
+export function getId(): number {
+  const path = 'src/assets/md/describe';
+  const count = fs.readdirSync(path).length;
+  return count;
 }
