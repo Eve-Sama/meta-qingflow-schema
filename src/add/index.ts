@@ -1,41 +1,5 @@
 import { Rule, SchematicContext, Tree, chain, mergeWith, Source } from '@angular-devkit/schematics';
-import { Project, SyntaxKind } from 'ts-morph';
-import { generateFiles } from './utils';
-const modulePath = 'src/app/QAA/QAA.config.ts';
-const project = new Project();
-
-/**
- * 在特定数组中插入元素
- * @param arrayName 数组名
- * @param insertText 插入的文本内容
- */
-function insertArrayIdentifier(arrayName: string, insertText: string): void {
-  const sourceFile = project.addSourceFileAtPath(modulePath);
-  const declaration = sourceFile.getVariableDeclaration(arrayName);
-  const arrayLiteralExpress = declaration!.getInitializerIfKindOrThrow(SyntaxKind.ArrayLiteralExpression);
-  const elements = arrayLiteralExpress.getElements();
-  const lastElement = elements[elements.length - 1];
-  // 新元素插入的位置, 需要计算当前最后个数组元素的起点位置+元素宽度, 还有4个字符的宽度我也不知道怎么来的, +上就对了
-  const startPosition = lastElement.getPos() + lastElement.getText().length + 4;
-  sourceFile.insertText(startPosition, `\n\t${insertText},`);
-  sourceFile.saveSync();
-}
-
-function insertImportDeclaration(startText: string, insertText: string): void {
-  const sourceFile = project.addSourceFileAtPath(modulePath);
-  const declarations = sourceFile.getImportDeclarations();
-  // 上一个import state出现的行数
-  let lastLineNumber = 0;
-  declarations.forEach((declaration, index) => {
-    const namedImport = declaration.getNamedImports()[0];
-    const importName = namedImport.getNameNode().getText();
-    if (importName.startsWith(startText)) {
-      lastLineNumber = index + 1;
-    }
-  });
-  sourceFile.insertStatements(lastLineNumber, insertText);
-  sourceFile.saveSync();
-}
+import { generateFiles, insertArrayIdentifier, insertImportDeclaration, showMessage } from './utils';
 
 export default function (options: any): Rule {
   return (_tree: Tree, _context: SchematicContext) => {
@@ -66,6 +30,7 @@ export default function (options: any): Rule {
     insertArrayIdentifier('QUESTION', `Question${index}Component`);
     const ruleArr: Rule[] = [];
     sourceList.forEach(v => ruleArr.push(mergeWith(v)));
+    showMessage();
     return chain(ruleArr);
   };
 }

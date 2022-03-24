@@ -1,26 +1,14 @@
-import * as ts from '@schematics/angular/third_party/github.com/Microsoft/TypeScript/lib/typescript';
-import { apply, applyTemplates, move, Source, Tree, url } from '@angular-devkit/schematics';
-import { insertImport } from '@schematics/angular/utility/ast-utils';
-import { InsertChange, NoopChange } from '@schematics/angular/utility/change';
+import { apply, applyTemplates, move, Source, url } from '@angular-devkit/schematics';
 import { normalize } from '@angular-devkit/core';
+import { Project, SyntaxKind, IndentationText } from 'ts-morph';
+import * as ansiColors from 'ansi-colors';
+import _ from 'lodash';
 
-function getTsSourceFile(host: Tree, path: string) {
-  const buffer = host.read(path) as Buffer;
-  const content = buffer.toString();
-  const source = ts.createSourceFile(path, content, ts.ScriptTarget.Latest, true);
-  return source;
-}
-
-/** 导入文件 */
-export function addImportStatement(tree: Tree, filePath: string, importName: string, importPath: string): void {
-  let source = getTsSourceFile(tree, filePath);
-  const importChange = insertImport(source, filePath, importName, importPath) as InsertChange;
-  if (!(importChange instanceof NoopChange)) {
-    const recorder = tree.beginUpdate(filePath);
-    recorder.insertLeft(importChange.pos, importChange.toAdd);
-    tree.commitUpdate(recorder);
-  }
-}
+const modulePath = 'src/app/QAA/QAA.config.ts';
+const project = new Project({
+  manipulationSettings: { indentationText: IndentationText.TwoSpaces },
+});
+let messages: Array<{ type: 'UPDATE'; path: string }> = [];
 
 /** 新增模板文件 */
 export function generateFiles(options: any, templateURL: string, targetUrl: string): Source {
@@ -32,4 +20,47 @@ export function generateFiles(options: any, templateURL: string, targetUrl: stri
     move(movePath),
   ]);
   return sourceParametrizedTemplates;
+}
+
+/**
+ * 在特定数组中插入元素
+ * @param arrayName 数组名
+ * @param insertText 插入的文本内容
+ */
+export function insertArrayIdentifier(arrayName: string, insertText: string): void {
+  const sourceFile = project.addSourceFileAtPath(modulePath);
+  const declaration = sourceFile.getVariableDeclaration(arrayName);
+  const arrayLiteralExpress = declaration!.getInitializerIfKindOrThrow(SyntaxKind.ArrayLiteralExpression);
+  arrayLiteralExpress.addElement(`${insertText},`);
+  messages.push({ type: 'UPDATE', path: modulePath });
+  sourceFile.saveSync();
+}
+
+export function showMessage() {
+  console.log(ansiColors.bold.yellow('Below infomations comes from TS-Morph'));
+  messages = _.uniqBy(messages, v => `${v.type}${v.path}`);
+  messages.forEach(v => {
+    // 目前利用ts-morph实现的只有更新文件, 所以先写死type对应的效果
+    const action = ansiColors.cyan(v.type);
+    const path = ansiColors.white(v.path);
+    const size = project.addSourceFileAtPath(modulePath).getFullText().length;
+    console.log(`${action} ${path} (${size} bytes)`);
+  });
+  console.log(ansiColors.bold.yellow('Below infomations comes from Angular Schematics'));
+}
+
+export function insertImportDeclaration(startText: string, insertText: string): void {
+  const sourceFile = project.addSourceFileAtPath(modulePath);
+  const declarations = sourceFile.getImportDeclarations();
+  // 上一个import state出现的行数
+  let lastLineNumber = 0;
+  declarations.forEach((declaration, index) => {
+    const namedImport = declaration.getNamedImports()[0];
+    const importName = namedImport.getNameNode().getText();
+    if (importName.startsWith(startText)) {
+      lastLineNumber = index + 1;
+    }
+  });
+  sourceFile.insertStatements(lastLineNumber, insertText);
+  sourceFile.saveSync();
 }
