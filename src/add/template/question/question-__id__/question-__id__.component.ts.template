@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
+  selector: 'app-question-<%= id %>',
   templateUrl: './question-<%= id %>.component.html',
   styleUrls: ['./question-<%= id %>.component.scss'],
 })

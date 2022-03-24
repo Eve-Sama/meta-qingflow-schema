@@ -12,7 +12,7 @@ const project = new Project({
 let messages: Array<{ type: 'UPDATE'; path: string }> = [];
 
 /** 新增模板文件 */
-export function generateFiles(options: any, templateURL: string, targetUrl: string): Source {
+export function generateFiles(options: Option, templateURL: string, targetUrl: string): Source {
   const movePath = normalize(targetUrl);
   const sourceParametrizedTemplates = apply(url(templateURL), [
     applyTemplates({
