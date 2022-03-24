@@ -3,7 +3,7 @@
   "$id": "SchematicsMyComponent",
   "type": "object",
   "properties": {
-    "index": {
+    "id": {
       "type": "string",
       "description": "输入题目序号",
       "x-prompt": "输入题目序号"
@@ -19,5 +19,5 @@
       "x-prompt": "需要生成解析吗?"
     }
   },
-  "required": ["index", "answer", "analyse"]
+  "required": ["id", "answer", "analyse"]
 }

@@ -1,0 +1,9 @@
+import { Component } from '@angular/core';
+
+@Component({
+  templateUrl: './answer-<%= id %>.component.html',
+  styleUrls: ['./answer-<%= id %>.component.scss'],
+})
+export class Answer<%= id %>Component {
+  
+}
